@@ -1,0 +1,38 @@
+{
+  "client_name": "Robert & Angela Martinez",
+  "client_address": "4821 Seabreeze Lane, Huntington Beach, CA 92648",
+  "proposal_date": "March 2026",
+  "project_total": "$541,000",
+  "scope_items": [
+    "Plans & Engineering",
+    "Full 2nd Story Addition (1,200 SF)",
+    "Complete Kitchen Remodel",
+    "Master Bathroom Remodel",
+    "Garage Conversion to ADU (400 SF)",
+    "Roofing (Full Replacement)"
+  ],
+  "payments": [
+    ["Down payment",                                                  "$1,000"],
+    ["Mobilization & Start Architectural Design",                    "$18,000"],
+    ["Upon Plans Approval & Permit Submission",                      "$12,000"],
+    ["Site Prep & Start Demo",                                       "$35,000"],
+    ["Upon Start Foundation Work (Slab on Grade)",                   "$38,000"],
+    ["Upon Foundation Inspection Approval",                          "$25,000"],
+    ["Upon Start Framing (Wood Framing)",                            "$48,000"],
+    ["Pass Framing Inspection",                                      "$35,000"],
+    ["Upon Start Rough MEP (Mechanical, Electrical, Plumbing)",      "$42,000"],
+    ["Pass Rough MEP Inspection",                                    "$28,000"],
+    ["Upon Start Drywall & Insulation",                              "$22,000"],
+    ["Upon Start Exterior Lath & Stucco",                            "$20,000"],
+    ["Upon Start Kitchen Cabinet Installation (Custom Shaker)",      "$35,000"],
+    ["Upon Start Countertop Fabrication (Quartz)",                   "$18,000"],
+    ["Upon Pass Lath & Insulation Inspection",                       "$15,000"],
+    ["Upon Finish Stucco & Exterior Paint",                          "$22,000"],
+    ["Upon Start Tile Roof Installation",                            "$28,000"],
+    ["Upon Start Master Bath Tile Work (Porcelain)",                 "$16,000"],
+    ["Upon Start ADU Interior Finishes",                             "$24,000"],
+    ["Upon Start Hardwood Flooring (Engineered Wood)",               "$18,000"],
+    ["Upon Pass Final Inspection",                                   "$28,000"],
+    ["Upon Completion & Final Punch List",                           "$12,000"]
+  ]
+}

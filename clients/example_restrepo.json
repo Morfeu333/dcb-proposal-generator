@@ -1,0 +1,31 @@
+{
+  "client_name":    "David & Maria Restrepo",
+  "client_address": "2847 Hillcrest Drive, Newport Beach, CA 92660",
+  "proposal_date":  "March 2026",
+  "project_total":  "$312,500",
+  "scope_items": [
+    "Plans & Engineering",
+    "500 SF 2nd Story Addition",
+    "Custom Kitchen Remodel",
+    "Hardwood Floor Restoration"
+  ],
+  "payments": [
+    ["Down payment",                                               "$1,000"],
+    ["Mobilization & Start Architectural Design",                  "$12,000"],
+    ["Upon plans approval",                                        "$8,000"],
+    ["Site Prep & Start Demo",                                     "$22,000"],
+    ["Upon Start Foundation & Structural Work",                    "$28,000"],
+    ["Upon Foundation Inspection",                                 "$18,000"],
+    ["Pass Framing Inspection",                                    "$35,000"],
+    ["Upon Start Rough MEP",                                       "$38,000"],
+    ["Pass Rough MEP Inspection",                                  "$22,000"],
+    ["Upon Start Drywall Work",                                    "$18,000"],
+    ["Upon Start Exterior Lath & Stucco",                          "$16,000"],
+    ["Upon Start Custom Kitchen Cabinet Installation",             "$30,000"],
+    ["Upon Start Countertop Fabrication",                          "$14,500"],
+    ["Upon Finish Stucco & Exterior Paint",                        "$18,000"],
+    ["Upon Start Hardwood Floor Restoration",                      "$12,000"],
+    ["Upon Pass Final Inspection",                                 "$15,000"],
+    ["Upon Final Completion & Punch List",                         "$5,000"]
+  ]
+}

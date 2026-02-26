@@ -1,0 +1,17 @@
+# Generated PDFs — these are outputs, not tracked
+*.pdf
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
