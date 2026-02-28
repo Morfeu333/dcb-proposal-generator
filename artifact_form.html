@@ -4,332 +4,380 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>D&C Builders — New Client Intake</title>
-
-<!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-  /* ── Reset & Base ───────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Georgia', serif;
-    background: #f0ece4;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem 4rem;
-    color: #2c2c2c;
-  }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: #ede9e2;
+  min-height: 100vh;
+  color: #2c2a27;
+}
 
-  /* ── Logo ───────────────────────────────────────────────── */
-  .logo-wrap {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+/* ── Nav ─────────────────────────────────────────────────── */
+nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  padding: 1rem 2.5rem;
+  background: #ede9e2;
+}
 
-  .logo-wrap h1 {
-    font-size: 1.6rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 1.2;
-  }
+nav a {
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: #8a7f6e;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
 
-  .logo-wrap .cursive {
-    font-family: 'Georgia', serif;
-    font-style: italic;
-    font-size: 1.1rem;
-    font-weight: 300;
-  }
+nav a.active { color: #c17f3a; font-weight: 600; }
 
-  /* ── Card ───────────────────────────────────────────────── */
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 640px;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-  }
+/* ── Logo ────────────────────────────────────────────────── */
+.logo-wrap {
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+}
 
-  .card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+.logo-wrap h1 {
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: #2c2a27;
+}
 
-  /* ── Sections ───────────────────────────────────────────── */
-  .section {
-    border-top: 1px solid #e5e0d8;
-    padding-top: 1.25rem;
-    margin-top: 1.25rem;
-  }
+.logo-wrap .cursive {
+  font-style: italic;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
 
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    user-select: none;
-  }
+/* ── Card ────────────────────────────────────────────────── */
+.card {
+  background: #f5f2ed;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto 4rem;
+  padding: 2.5rem 2.25rem 3rem;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+}
 
-  .section-header h2 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #8a7f72;
-    letter-spacing: 0.02em;
-  }
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2c2a27;
+}
 
-  .section-header .chevron {
-    font-size: 0.8rem;
-    color: #8a7f72;
-    transition: transform 0.2s;
-  }
+/* ── Accordion sections ──────────────────────────────────── */
+.section { margin-top: 1.5rem; border-top: 1px solid #ddd8cf; padding-top: 1.1rem; }
 
-  .section-header.collapsed .chevron { transform: rotate(180deg); }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 1.1rem;
+}
 
-  .section-body { display: block; }
-  .section-body.hidden { display: none; }
+.section-header h2 {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #9a9080;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
 
-  /* ── Form Grid ──────────────────────────────────────────── */
-  .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
+.chevron { color: #9a9080; font-size: 0.75rem; transition: transform 0.2s; }
+.section-header.closed .chevron { transform: rotate(180deg); }
+.section-body.hidden { display: none; }
 
-  .row.full { grid-template-columns: 1fr; }
-  .row.three { grid-template-columns: 2fr 1fr 1fr; }
+/* ── Sub-tabs (New Construction) ─────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #ddd8cf;
+  margin-bottom: 1.25rem;
+}
 
-  .field { display: flex; flex-direction: column; gap: 4px; }
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #9a9080;
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
 
-  label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #8a7f72;
-    letter-spacing: 0.03em;
-  }
+.tab-btn.active { color: #2c2a27; border-bottom-color: #c17f3a; font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-  label .req { color: #c0392b; }
+/* ── Form fields ─────────────────────────────────────────── */
+.row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.row.col2 { grid-template-columns: 1fr 1fr; }
+.row.col1 { grid-template-columns: 1fr; }
+.row.col3 { grid-template-columns: 2fr 1fr 1fr; }
 
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"] {
-    border: 1px solid #ddd8cf;
-    border-radius: 6px;
-    padding: 0.55rem 0.7rem;
-    font-size: 0.9rem;
-    font-family: inherit;
-    color: #2c2c2c;
-    background: #fff;
-    outline: none;
-    transition: border-color 0.15s;
-  }
+.field { display: flex; flex-direction: column; gap: 5px; }
 
-  input:focus { border-color: #2c2c2c; }
+label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9a9080;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
 
-  /* ── Toggles ────────────────────────────────────────────── */
-  .toggle-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.6rem 2rem;
-    margin-bottom: 1rem;
-  }
+.req { color: #c0392b; }
 
-  .toggle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-  }
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+  border: 1px solid #ddd8cf;
+  border-radius: 7px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.88rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #2c2a27;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
 
-  .toggle {
-    position: relative;
-    width: 40px;
-    height: 22px;
-    flex-shrink: 0;
-  }
+input:focus, textarea:focus, select:focus { border-color: #2c2a27; }
 
-  .toggle input { opacity: 0; width: 0; height: 0; }
+textarea { resize: vertical; min-height: 72px; }
 
-  .slider {
-    position: absolute;
-    inset: 0;
-    background: #ccc;
-    border-radius: 22px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+/* ── Toggle grid ─────────────────────────────────────────── */
+.toggle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 2.5rem;
+  margin-bottom: 0.75rem;
+}
 
-  .slider::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    left: 3px;
-    top: 3px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 0.2s;
-  }
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.83rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #2c2a27;
+}
 
-  .toggle input:checked + .slider { background: #2c2c2c; }
-  .toggle input:checked + .slider::before { transform: translateX(18px); }
+.toggle {
+  position: relative;
+  width: 38px;
+  height: 21px;
+  flex-shrink: 0;
+}
 
-  /* ── Scope Items ────────────────────────────────────────── */
-  .scope-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+.toggle input { opacity: 0; width: 0; height: 0; }
 
-  .scope-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 21px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
-  .scope-item input {
-    flex: 1;
-    border: 1px solid #ddd8cf;
-    border-radius: 6px;
-    padding: 0.45rem 0.6rem;
-    font-size: 0.85rem;
-    font-family: inherit;
-  }
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
 
-  .scope-item input:focus { outline: none; border-color: #2c2c2c; }
+.toggle input:checked + .slider { background: #2c2a27; }
+.toggle input:checked + .slider::before { transform: translateX(17px); }
 
-  .btn-remove {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 4px;
-    line-height: 1;
-  }
+/* ── Counter input ───────────────────────────────────────── */
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  .btn-remove:hover { color: #c0392b; }
+.counter input {
+  width: 60px;
+  text-align: center;
+  padding: 0.5rem 0.3rem;
+}
 
-  .btn-add-scope {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: none;
-    border: none;
-    color: #8a7f72;
-    font-size: 0.82rem;
-    cursor: pointer;
-    padding: 0;
-    font-family: inherit;
-  }
+.counter-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ddd8cf;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .btn-add-scope:hover { color: #2c2c2c; }
+.counter-btn:hover { border-color: #2c2a27; }
 
-  /* ── Additional ─────────────────────────────────────────── */
-  .file-icons {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-  }
+/* ── Scope of Work ───────────────────────────────────────── */
+.scope-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px dashed #c0b9ae;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #9a9080;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+  transition: border-color 0.15s, color 0.15s;
+}
 
-  .icon-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1.5px solid #ccc;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #555;
-    transition: border-color 0.15s;
-  }
+.scope-add-btn:hover { border-color: #2c2a27; color: #2c2a27; }
 
-  .icon-btn:hover { border-color: #2c2c2c; }
+.scope-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
 
-  textarea {
-    width: 100%;
-    border: 1px solid #ddd8cf;
-    border-radius: 6px;
-    padding: 0.6rem 0.7rem;
-    font-size: 0.85rem;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 80px;
-    outline: none;
-    margin-top: 0.75rem;
-  }
+.scope-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  textarea:focus { border-color: #2c2c2c; }
+.scope-item input {
+  flex: 1;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.84rem;
+}
 
-  /* ── Submit ─────────────────────────────────────────────── */
-  .submit-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 2rem;
-  }
+.btn-remove {
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
 
-  .btn-submit {
-    background: #2c2c2c;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.8rem;
-    font-size: 0.9rem;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background 0.15s;
-  }
+.btn-remove:hover { color: #c0392b; }
 
-  .btn-submit:hover { background: #444; }
-  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+/* ── File icons ──────────────────────────────────────────── */
+.file-icons { display: flex; gap: 0.6rem; margin-top: 0.5rem; }
 
-  /* ── Success / Error ────────────────────────────────────── */
-  .message {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    text-align: center;
-    display: none;
-  }
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+  transition: border-color 0.15s;
+}
 
-  .message.success { background: #eafaf1; color: #1e8449; display: block; }
-  .message.error   { background: #fdf2f2; color: #c0392b; display: block; }
+.icon-btn:hover { border-color: #2c2a27; }
+
+/* ── Submit ──────────────────────────────────────────────── */
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.btn-submit {
+  background: #2c2a27;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.72rem 1.8rem;
+  font-size: 0.88rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.btn-submit:hover { background: #444; }
+.btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+/* ── Messages ────────────────────────────────────────────── */
+.message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  text-align: center;
+  display: none;
+}
+
+.message.success { background: #eafaf1; color: #1e8449; display: block; }
+.message.error   { background: #fdf2f2; color: #c0392b; display: block; }
 </style>
 </head>
 <body>
 
-<!-- Logo -->
+<nav>
+  <a href="#" class="active">Intake Form</a>
+  <a href="#">Proposal Library</a>
+</nav>
+
 <div class="logo-wrap">
   <h1>Design and<br>Builders <span class="cursive">Create</span></h1>
 </div>
 
-<!-- Card -->
 <div class="card">
   <div class="card-title">New Client Intake</div>
 
   <form id="intakeForm">
 
-    <!-- ── Client & Property ───────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         CLIENT & PROPERTY INFORMATION
+    ══════════════════════════════════════════════════════ -->
     <div class="section">
       <div class="section-header" onclick="toggleSection(this)">
         <h2>Client &amp; Property Information</h2>
         <span class="chevron">▲</span>
       </div>
       <div class="section-body">
-        <div class="row">
+        <div class="row col2">
           <div class="field">
             <label>First Name <span class="req">*</span></label>
             <input type="text" id="firstName" required placeholder="Mary">
@@ -339,7 +387,7 @@
             <input type="text" id="lastName" required placeholder="Rodriguez">
           </div>
         </div>
-        <div class="row">
+        <div class="row col2">
           <div class="field">
             <label>Phone</label>
             <input type="tel" id="phone" placeholder="(555) 000-0000">
@@ -349,13 +397,13 @@
             <input type="email" id="email" required placeholder="mary@example.com">
           </div>
         </div>
-        <div class="row full">
+        <div class="row col1">
           <div class="field">
             <label>Street Address <span class="req">*</span></label>
             <input type="text" id="streetAddress" required placeholder="789 Elm Blvd">
           </div>
         </div>
-        <div class="row three">
+        <div class="row col3">
           <div class="field">
             <label>City <span class="req">*</span></label>
             <input type="text" id="city" required placeholder="Los Angeles">
@@ -369,20 +417,12 @@
             <input type="text" id="zip" required placeholder="90001">
           </div>
         </div>
-        <div class="row">
-          <div class="field">
-            <label>Project Total ($)</label>
-            <input type="text" id="projectTotal" placeholder="$298,000">
-          </div>
-          <div class="field">
-            <label>Proposal Date</label>
-            <input type="text" id="proposalDate" placeholder="March 2026">
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- ── Design Toggles ─────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         DESIGN
+    ══════════════════════════════════════════════════════ -->
     <div class="section">
       <div class="section-header" onclick="toggleSection(this)">
         <h2>Design</h2>
@@ -391,30 +431,329 @@
       <div class="section-body">
         <div class="toggle-grid">
           <div class="toggle-row">
-            <span>Design</span>
+            <span>Design:</span>
             <label class="toggle"><input type="checkbox" id="tgl_design" checked><span class="slider"></span></label>
           </div>
           <div class="toggle-row">
-            <span>Architectural</span>
+            <span>Architectural:</span>
             <label class="toggle"><input type="checkbox" id="tgl_architectural" checked><span class="slider"></span></label>
           </div>
           <div class="toggle-row">
-            <span>Engineering</span>
+            <span>Engineering:</span>
             <label class="toggle"><input type="checkbox" id="tgl_engineering" checked><span class="slider"></span></label>
           </div>
           <div class="toggle-row">
-            <span>Mood Boards</span>
+            <span>Mood Boards:</span>
             <label class="toggle"><input type="checkbox" id="tgl_mood_boards" checked><span class="slider"></span></label>
           </div>
           <div class="toggle-row">
-            <span>Space Planning</span>
+            <span>Space Planning:</span>
             <label class="toggle"><input type="checkbox" id="tgl_space_planning" checked><span class="slider"></span></label>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Scope of Work ──────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         CONSTRUCTION
+    ══════════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Construction</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="toggle-grid">
+          <div class="toggle-row">
+            <span>Site Preparation &amp; Demo:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_site_prep" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Foundation:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_foundation" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Framing:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_framing" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Electrical Rough-In:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_elec_rough" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Electrical Finishing:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_elec_finish" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Plumbing Rough-In:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_plumb_rough" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Plumbing Finishing:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_plumb_finish" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Roofing:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_roofing" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Insulation:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_insulation" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Drywall &amp; Paint:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_drywall" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Exterior Finish:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_exterior" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Siding &amp; Trim:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_siding" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Windows &amp; Exterior Doors:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_windows" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Flooring:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_flooring" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Interior Doors &amp; Trim:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_interior_doors" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Cabinetry &amp; Fixtures:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_cabinetry" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Bathroom:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_bathroom" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>HVAC / Mini-Split:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_hvac" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Plans:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_plans" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Wall Removal:</span>
+            <label class="toggle"><input type="checkbox" id="tgl_wall_removal"><span class="slider"></span></label>
+          </div>
+        </div>
+        <div class="row col1" style="margin-top:0.5rem">
+          <div class="field">
+            <label>Notes</label>
+            <textarea id="constructionNotes" placeholder="Any construction-specific notes..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         NEW CONSTRUCTION (tabbed)
+    ══════════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>New Construction</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="tabs">
+          <button type="button" class="tab-btn active" onclick="switchTab(this,'tab-main')">Main Details</button>
+          <button type="button" class="tab-btn" onclick="switchTab(this,'tab-materials')">Materials</button>
+          <button type="button" class="tab-btn" onclick="switchTab(this,'tab-additional')">Additional Details</button>
+          <button type="button" class="tab-btn" onclick="switchTab(this,'tab-payment')">Payment Schedule</button>
+        </div>
+
+        <!-- Main Details -->
+        <div class="tab-panel active" id="tab-main">
+          <div class="row col2">
+            <div class="field">
+              <label>Type</label>
+              <select id="nc_type">
+                <option>New Build</option>
+                <option>Fire Rebuild</option>
+                <option>ADU</option>
+                <option>2nd Story Addition</option>
+                <option>Room Addition</option>
+                <option>Remodel</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>No. of Stories</label>
+              <select id="nc_stories">
+                <option>1 Story</option>
+                <option selected>2nd Story</option>
+                <option>Split Level</option>
+              </select>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Approx. Area (sf)</label>
+              <input type="text" id="nc_area_sf" placeholder="1200">
+            </div>
+            <div class="field">
+              <label>HVAC</label>
+              <select id="nc_hvac">
+                <option selected>Central</option>
+                <option>Mini-Split</option>
+                <option>None</option>
+              </select>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Bedroom Count</label>
+              <div class="counter">
+                <button type="button" class="counter-btn" onclick="adjustCounter('nc_bedrooms',-1)">−</button>
+                <input type="text" id="nc_bedrooms" value="3">
+                <button type="button" class="counter-btn" onclick="adjustCounter('nc_bedrooms',1)">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>Bathroom Count</label>
+              <div class="counter">
+                <button type="button" class="counter-btn" onclick="adjustCounter('nc_bathrooms',-0.5)">−</button>
+                <input type="text" id="nc_bathrooms" value="2.5">
+                <button type="button" class="counter-btn" onclick="adjustCounter('nc_bathrooms',0.5)">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Scope Total ($)</label>
+              <input type="text" id="nc_scope_total" placeholder="50,000">
+            </div>
+            <div class="field">
+              <label>Proposal Date</label>
+              <input type="text" id="proposalDate" placeholder="March 2026">
+            </div>
+          </div>
+          <div class="row col1">
+            <div class="field">
+              <label>Notes</label>
+              <textarea id="nc_notes" placeholder="Add any additional notes for main details..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Materials -->
+        <div class="tab-panel" id="tab-materials">
+          <div class="row col2">
+            <div class="field">
+              <label>Flooring Material</label>
+              <select id="mat_flooring">
+                <option>Engineered Hardwood</option>
+                <option>LVP / SPC</option>
+                <option>Hardwood</option>
+                <option>Tile</option>
+                <option>Carpet</option>
+                <option>TBD</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Countertop Material</label>
+              <select id="mat_countertop">
+                <option>Quartz (Prefab)</option>
+                <option>Quartz (Custom)</option>
+                <option>Granite</option>
+                <option>Marble</option>
+                <option>Laminate</option>
+                <option>TBD</option>
+              </select>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Cabinet Style</label>
+              <select id="mat_cabinets">
+                <option>Custom Shaker</option>
+                <option>Flat Panel</option>
+                <option>Raised Panel</option>
+                <option>TBD</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Exterior Finish</label>
+              <select id="mat_exterior">
+                <option>Stucco (Santa Barbara)</option>
+                <option>Stucco (Smooth)</option>
+                <option>Siding</option>
+                <option>TBD</option>
+              </select>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Roofing Material</label>
+              <select id="mat_roofing">
+                <option>Concrete Tile</option>
+                <option>Clay Tile</option>
+                <option>Composition Shingles</option>
+                <option>TBD</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Windows</label>
+              <select id="mat_windows">
+                <option>Vinyl Dual-Pane</option>
+                <option>Aluminum</option>
+                <option>Fiberglass</option>
+                <option>TBD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="tab-panel" id="tab-additional">
+          <div class="row col1">
+            <div class="field">
+              <label>Special Requirements</label>
+              <textarea id="add_special" placeholder="Coastal commission, HOA restrictions, specific city requirements..."></textarea>
+            </div>
+          </div>
+          <div class="row col1">
+            <div class="field">
+              <label>Client Design Preferences</label>
+              <textarea id="add_design_prefs" placeholder="Modern, contemporary, craftsman, Spanish colonial..."></textarea>
+            </div>
+          </div>
+          <div class="row col2">
+            <div class="field">
+              <label>Desired Start Date</label>
+              <input type="text" id="add_start_date" placeholder="e.g. April 2026">
+            </div>
+            <div class="field">
+              <label>Referred By</label>
+              <input type="text" id="add_referred_by" placeholder="e.g. John Smith">
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Schedule -->
+        <div class="tab-panel" id="tab-payment">
+          <p style="font-size:0.82rem;font-family:'Helvetica Neue',Arial,sans-serif;color:#9a9080;margin-bottom:1rem;">
+            Leave blank to let Claude auto-generate the payment schedule based on scope and total.
+            Or add custom milestones below.
+          </p>
+          <div class="scope-list" id="paymentList"></div>
+          <button type="button" class="scope-add-btn" onclick="addPayment()">
+            ⊕ &nbsp;Add Payment Milestone
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         SCOPE OF WORK
+    ══════════════════════════════════════════════════════ -->
     <div class="section">
       <div class="section-header" onclick="toggleSection(this)">
         <h2>Scope of Work</h2>
@@ -423,17 +762,19 @@
       <div class="section-body">
         <div class="scope-list" id="scopeList">
           <div class="scope-item">
-            <input type="text" placeholder="e.g. Kitchen Remodel" value="Plans &amp; Engineering">
-            <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
+            <input type="text" placeholder="e.g. Full 2nd Story Addition (1,200 SF)">
+            <button type="button" class="btn-remove" onclick="removeItem(this)">✕</button>
           </div>
         </div>
-        <button type="button" class="btn-add-scope" onclick="addScope()">
+        <button type="button" class="scope-add-btn" onclick="addScope()">
           ⊕ &nbsp;Add Scope Item
         </button>
       </div>
     </div>
 
-    <!-- ── Additional Notes ───────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         ADDITIONAL NOTES
+    ══════════════════════════════════════════════════════ -->
     <div class="section">
       <div class="section-header" onclick="toggleSection(this)">
         <h2>Additional Notes, Files &amp; Voice Memo</h2>
@@ -445,11 +786,13 @@
           <button type="button" class="icon-btn" title="Upload">⬆</button>
           <button type="button" class="icon-btn" title="Voice memo">🎤</button>
         </div>
-        <textarea id="notes" placeholder="Any additional project notes, special requirements, or client preferences..."></textarea>
+        <textarea id="additionalNotes" placeholder="Any additional project notes, client preferences, or voice memo transcription..." style="margin-top:0.75rem"></textarea>
       </div>
     </div>
 
-    <!-- ── Submit ─────────────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         SUBMIT
+    ══════════════════════════════════════════════════════ -->
     <div class="submit-row">
       <button type="submit" class="btn-submit" id="submitBtn">
         Submit Intake &nbsp;→
@@ -462,40 +805,68 @@
 </div>
 
 <script>
-  // ── Supabase config ────────────────────────────────────────
-  // Replace these with your actual Supabase project values.
+  // ── Supabase ───────────────────────────────────────────────
   const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
   const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
-
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ── Section collapse ───────────────────────────────────────
+  // ── Accordion ──────────────────────────────────────────────
   function toggleSection(header) {
-    header.classList.toggle('collapsed');
+    header.classList.toggle('closed');
     header.nextElementSibling.classList.toggle('hidden');
   }
 
-  // ── Scope list ─────────────────────────────────────────────
+  // ── Tabs ───────────────────────────────────────────────────
+  function switchTab(btn, panelId) {
+    btn.closest('.section-body').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.closest('.section-body').querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  // ── Counter ────────────────────────────────────────────────
+  function adjustCounter(id, delta) {
+    const el = document.getElementById(id);
+    const val = parseFloat(el.value) || 0;
+    el.value = Math.max(0, val + delta);
+  }
+
+  // ── Scope items ────────────────────────────────────────────
   function addScope() {
     const list = document.getElementById('scopeList');
     const item = document.createElement('div');
     item.className = 'scope-item';
-    item.innerHTML = `
-      <input type="text" placeholder="e.g. Master Bathroom Remodel">
-      <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
-    `;
+    item.innerHTML = `<input type="text" placeholder="e.g. Kitchen Remodel"><button type="button" class="btn-remove" onclick="removeItem(this)">✕</button>`;
     list.appendChild(item);
     item.querySelector('input').focus();
   }
 
-  function removeScope(btn) {
-    const list = document.getElementById('scopeList');
-    if (list.children.length > 1) {
-      btn.closest('.scope-item').remove();
-    }
+  // ── Payment milestones ─────────────────────────────────────
+  function addPayment() {
+    const list = document.getElementById('paymentList');
+    const item = document.createElement('div');
+    item.className = 'scope-item';
+    item.style.gap = '0.4rem';
+    item.innerHTML = `
+      <input type="text" placeholder="Milestone description" style="flex:2">
+      <input type="text" placeholder="$0" style="flex:0.6;min-width:80px">
+      <button type="button" class="btn-remove" onclick="removeItem(this)">✕</button>`;
+    list.appendChild(item);
+    item.querySelector('input').focus();
   }
 
-  // ── Form submit ────────────────────────────────────────────
+  function removeItem(btn) {
+    btn.closest('.scope-item').remove();
+  }
+
+  // ── Collect toggles ────────────────────────────────────────
+  function getToggles(ids) {
+    const result = {};
+    ids.forEach(id => { result[id] = document.getElementById('tgl_' + id)?.checked ?? false; });
+    return result;
+  }
+
+  // ── Submit ─────────────────────────────────────────────────
   document.getElementById('intakeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -504,54 +875,71 @@
     btn.disabled = true;
     btn.textContent = 'Submitting…';
     msg.className = 'message';
-    msg.textContent = '';
 
-    // Collect scope items
-    const scopeItems = Array.from(
-      document.querySelectorAll('#scopeList .scope-item input')
-    ).map(i => i.value.trim()).filter(Boolean);
+    const scopeItems = Array.from(document.querySelectorAll('#scopeList .scope-item input'))
+      .map(i => i.value.trim()).filter(Boolean);
 
-    // Collect design toggles
-    const designToggles = {
-      design:        document.getElementById('tgl_design').checked,
-      architectural: document.getElementById('tgl_architectural').checked,
-      engineering:   document.getElementById('tgl_engineering').checked,
-      mood_boards:   document.getElementById('tgl_mood_boards').checked,
-      space_planning:document.getElementById('tgl_space_planning').checked,
+    const paymentRows = Array.from(document.querySelectorAll('#paymentList .scope-item'));
+    const payments = paymentRows.map(row => {
+      const inputs = row.querySelectorAll('input');
+      return [inputs[0]?.value.trim(), inputs[1]?.value.trim()];
+    }).filter(p => p[0]);
+
+    const designToggles = getToggles(['design','architectural','engineering','mood_boards','space_planning']);
+    const constructionToggles = getToggles([
+      'site_prep','foundation','framing','elec_rough','elec_finish',
+      'plumb_rough','plumb_finish','roofing','insulation','drywall',
+      'exterior','siding','windows','flooring','interior_doors',
+      'cabinetry','bathroom','hvac','plans','wall_removal'
+    ]);
+
+    const materials = {
+      flooring:   document.getElementById('mat_flooring')?.value,
+      countertop: document.getElementById('mat_countertop')?.value,
+      cabinets:   document.getElementById('mat_cabinets')?.value,
+      exterior:   document.getElementById('mat_exterior')?.value,
+      roofing:    document.getElementById('mat_roofing')?.value,
+      windows:    document.getElementById('mat_windows')?.value,
     };
 
     const payload = {
-      first_name:     document.getElementById('firstName').value.trim(),
-      last_name:      document.getElementById('lastName').value.trim(),
-      email:          document.getElementById('email').value.trim(),
-      phone:          document.getElementById('phone').value.trim(),
-      street_address: document.getElementById('streetAddress').value.trim(),
-      city:           document.getElementById('city').value.trim(),
-      state:          document.getElementById('state').value.trim(),
-      zip:            document.getElementById('zip').value.trim(),
-      project_total:  document.getElementById('projectTotal').value.trim(),
-      proposal_date:  document.getElementById('proposalDate').value.trim(),
-      scope_items:    scopeItems,
-      payments:       [],          // Claude generates the payment schedule
-      design_toggles: designToggles,
-      notes:          document.getElementById('notes').value.trim(),
-      status:         'pending',
+      first_name:            document.getElementById('firstName').value.trim(),
+      last_name:             document.getElementById('lastName').value.trim(),
+      email:                 document.getElementById('email').value.trim(),
+      phone:                 document.getElementById('phone').value.trim(),
+      street_address:        document.getElementById('streetAddress').value.trim(),
+      city:                  document.getElementById('city').value.trim(),
+      state:                 document.getElementById('state').value.trim(),
+      zip:                   document.getElementById('zip').value.trim(),
+      proposal_date:         document.getElementById('proposalDate').value.trim(),
+      project_total:         document.getElementById('nc_scope_total').value.trim(),
+      scope_items:           scopeItems,
+      payments:              payments,
+      design_toggles:        designToggles,
+      construction_toggles:  constructionToggles,
+      materials:             materials,
+      project_type:          document.getElementById('nc_type').value,
+      stories:               document.getElementById('nc_stories').value,
+      area_sf:               document.getElementById('nc_area_sf').value.trim(),
+      bedroom_count:         document.getElementById('nc_bedrooms').value,
+      bathroom_count:        document.getElementById('nc_bathrooms').value,
+      hvac_type:             document.getElementById('nc_hvac').value,
+      construction_notes:    document.getElementById('constructionNotes').value.trim(),
+      nc_notes:              document.getElementById('nc_notes').value.trim(),
+      special_requirements:  document.getElementById('add_special').value.trim(),
+      design_preferences:    document.getElementById('add_design_prefs').value.trim(),
+      desired_start_date:    document.getElementById('add_start_date').value.trim(),
+      referred_by:           document.getElementById('add_referred_by').value.trim(),
+      additional_notes:      document.getElementById('additionalNotes').value.trim(),
+      status:                'pending',
     };
 
     try {
       const { error } = await supabase.from('client_intakes').insert(payload);
-
       if (error) throw error;
-
       msg.className = 'message success';
-      msg.textContent = '✓ Intake submitted successfully. Claude will generate the proposal shortly.';
+      msg.textContent = '✓ Intake submitted. Claude will generate the proposal shortly.';
       document.getElementById('intakeForm').reset();
-      // Re-add one empty scope item
-      document.getElementById('scopeList').innerHTML = `
-        <div class="scope-item">
-          <input type="text" placeholder="e.g. Kitchen Remodel">
-          <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
-        </div>`;
     } catch (err) {
       msg.className = 'message error';
       msg.textContent = '✗ Submission failed: ' + (err.message || 'Unknown error');
