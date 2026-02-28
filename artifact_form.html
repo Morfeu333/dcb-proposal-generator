@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D&C Builders — New Client Intake</title>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  /* ── Reset & Base ───────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f0ece4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    color: #2c2c2c;
+  }
+
+  /* ── Logo ───────────────────────────────────────────────── */
+  .logo-wrap {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .logo-wrap h1 {
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .logo-wrap .cursive {
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 300;
+  }
+
+  /* ── Card ───────────────────────────────────────────────── */
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 640px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  /* ── Sections ───────────────────────────────────────────── */
+  .section {
+    border-top: 1px solid #e5e0d8;
+    padding-top: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+
+  .section-header h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #8a7f72;
+    letter-spacing: 0.02em;
+  }
+
+  .section-header .chevron {
+    font-size: 0.8rem;
+    color: #8a7f72;
+    transition: transform 0.2s;
+  }
+
+  .section-header.collapsed .chevron { transform: rotate(180deg); }
+
+  .section-body { display: block; }
+  .section-body.hidden { display: none; }
+
+  /* ── Form Grid ──────────────────────────────────────────── */
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .row.full { grid-template-columns: 1fr; }
+  .row.three { grid-template-columns: 2fr 1fr 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8a7f72;
+    letter-spacing: 0.03em;
+  }
+
+  label .req { color: #c0392b; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"] {
+    border: 1px solid #ddd8cf;
+    border-radius: 6px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: #2c2c2c;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus { border-color: #2c2c2c; }
+
+  /* ── Toggles ────────────────────────────────────────────── */
+  .toggle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .toggle input:checked + .slider { background: #2c2c2c; }
+  .toggle input:checked + .slider::before { transform: translateX(18px); }
+
+  /* ── Scope Items ────────────────────────────────────────── */
+  .scope-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+
+  .scope-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .scope-item input {
+    flex: 1;
+    border: 1px solid #ddd8cf;
+    border-radius: 6px;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+  }
+
+  .scope-item input:focus { outline: none; border-color: #2c2c2c; }
+
+  .btn-remove {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    line-height: 1;
+  }
+
+  .btn-remove:hover { color: #c0392b; }
+
+  .btn-add-scope {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    color: #8a7f72;
+    font-size: 0.82rem;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+  }
+
+  .btn-add-scope:hover { color: #2c2c2c; }
+
+  /* ── Additional ─────────────────────────────────────────── */
+  .file-icons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+    transition: border-color 0.15s;
+  }
+
+  .icon-btn:hover { border-color: #2c2c2c; }
+
+  textarea {
+    width: 100%;
+    border: 1px solid #ddd8cf;
+    border-radius: 6px;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    margin-top: 0.75rem;
+  }
+
+  textarea:focus { border-color: #2c2c2c; }
+
+  /* ── Submit ─────────────────────────────────────────────── */
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+  }
+
+  .btn-submit {
+    background: #2c2c2c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.8rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.15s;
+  }
+
+  .btn-submit:hover { background: #444; }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── Success / Error ────────────────────────────────────── */
+  .message {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    display: none;
+  }
+
+  .message.success { background: #eafaf1; color: #1e8449; display: block; }
+  .message.error   { background: #fdf2f2; color: #c0392b; display: block; }
+</style>
+</head>
+<body>
+
+<!-- Logo -->
+<div class="logo-wrap">
+  <h1>Design and<br>Builders <span class="cursive">Create</span></h1>
+</div>
+
+<!-- Card -->
+<div class="card">
+  <div class="card-title">New Client Intake</div>
+
+  <form id="intakeForm">
+
+    <!-- ── Client & Property ───────────────────────────────── -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Client &amp; Property Information</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="row">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" required placeholder="Mary">
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" required placeholder="Rodriguez">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Phone</label>
+            <input type="tel" id="phone" placeholder="(555) 000-0000">
+          </div>
+          <div class="field">
+            <label>Email <span class="req">*</span></label>
+            <input type="email" id="email" required placeholder="mary@example.com">
+          </div>
+        </div>
+        <div class="row full">
+          <div class="field">
+            <label>Street Address <span class="req">*</span></label>
+            <input type="text" id="streetAddress" required placeholder="789 Elm Blvd">
+          </div>
+        </div>
+        <div class="row three">
+          <div class="field">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="city" required placeholder="Los Angeles">
+          </div>
+          <div class="field">
+            <label>State <span class="req">*</span></label>
+            <input type="text" id="state" required placeholder="CA" value="CA">
+          </div>
+          <div class="field">
+            <label>Zip Code <span class="req">*</span></label>
+            <input type="text" id="zip" required placeholder="90001">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Project Total ($)</label>
+            <input type="text" id="projectTotal" placeholder="$298,000">
+          </div>
+          <div class="field">
+            <label>Proposal Date</label>
+            <input type="text" id="proposalDate" placeholder="March 2026">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Design Toggles ─────────────────────────────────── -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Design</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="toggle-grid">
+          <div class="toggle-row">
+            <span>Design</span>
+            <label class="toggle"><input type="checkbox" id="tgl_design" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Architectural</span>
+            <label class="toggle"><input type="checkbox" id="tgl_architectural" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Engineering</span>
+            <label class="toggle"><input type="checkbox" id="tgl_engineering" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Mood Boards</span>
+            <label class="toggle"><input type="checkbox" id="tgl_mood_boards" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Space Planning</span>
+            <label class="toggle"><input type="checkbox" id="tgl_space_planning" checked><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Scope of Work ──────────────────────────────────── -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Scope of Work</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="scope-list" id="scopeList">
+          <div class="scope-item">
+            <input type="text" placeholder="e.g. Kitchen Remodel" value="Plans &amp; Engineering">
+            <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-scope" onclick="addScope()">
+          ⊕ &nbsp;Add Scope Item
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Additional Notes ───────────────────────────────── -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Additional Notes, Files &amp; Voice Memo</h2>
+        <span class="chevron">▲</span>
+      </div>
+      <div class="section-body">
+        <div class="file-icons">
+          <button type="button" class="icon-btn" title="Attach file">📄</button>
+          <button type="button" class="icon-btn" title="Upload">⬆</button>
+          <button type="button" class="icon-btn" title="Voice memo">🎤</button>
+        </div>
+        <textarea id="notes" placeholder="Any additional project notes, special requirements, or client preferences..."></textarea>
+      </div>
+    </div>
+
+    <!-- ── Submit ─────────────────────────────────────────── -->
+    <div class="submit-row">
+      <button type="submit" class="btn-submit" id="submitBtn">
+        Submit Intake &nbsp;→
+      </button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+  </form>
+</div>
+
+<script>
+  // ── Supabase config ────────────────────────────────────────
+  // Replace these with your actual Supabase project values.
+  const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── Section collapse ───────────────────────────────────────
+  function toggleSection(header) {
+    header.classList.toggle('collapsed');
+    header.nextElementSibling.classList.toggle('hidden');
+  }
+
+  // ── Scope list ─────────────────────────────────────────────
+  function addScope() {
+    const list = document.getElementById('scopeList');
+    const item = document.createElement('div');
+    item.className = 'scope-item';
+    item.innerHTML = `
+      <input type="text" placeholder="e.g. Master Bathroom Remodel">
+      <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
+    `;
+    list.appendChild(item);
+    item.querySelector('input').focus();
+  }
+
+  function removeScope(btn) {
+    const list = document.getElementById('scopeList');
+    if (list.children.length > 1) {
+      btn.closest('.scope-item').remove();
+    }
+  }
+
+  // ── Form submit ────────────────────────────────────────────
+  document.getElementById('intakeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('message');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    msg.className = 'message';
+    msg.textContent = '';
+
+    // Collect scope items
+    const scopeItems = Array.from(
+      document.querySelectorAll('#scopeList .scope-item input')
+    ).map(i => i.value.trim()).filter(Boolean);
+
+    // Collect design toggles
+    const designToggles = {
+      design:        document.getElementById('tgl_design').checked,
+      architectural: document.getElementById('tgl_architectural').checked,
+      engineering:   document.getElementById('tgl_engineering').checked,
+      mood_boards:   document.getElementById('tgl_mood_boards').checked,
+      space_planning:document.getElementById('tgl_space_planning').checked,
+    };
+
+    const payload = {
+      first_name:     document.getElementById('firstName').value.trim(),
+      last_name:      document.getElementById('lastName').value.trim(),
+      email:          document.getElementById('email').value.trim(),
+      phone:          document.getElementById('phone').value.trim(),
+      street_address: document.getElementById('streetAddress').value.trim(),
+      city:           document.getElementById('city').value.trim(),
+      state:          document.getElementById('state').value.trim(),
+      zip:            document.getElementById('zip').value.trim(),
+      project_total:  document.getElementById('projectTotal').value.trim(),
+      proposal_date:  document.getElementById('proposalDate').value.trim(),
+      scope_items:    scopeItems,
+      payments:       [],          // Claude generates the payment schedule
+      design_toggles: designToggles,
+      notes:          document.getElementById('notes').value.trim(),
+      status:         'pending',
+    };
+
+    try {
+      const { error } = await supabase.from('client_intakes').insert(payload);
+
+      if (error) throw error;
+
+      msg.className = 'message success';
+      msg.textContent = '✓ Intake submitted successfully. Claude will generate the proposal shortly.';
+      document.getElementById('intakeForm').reset();
+      // Re-add one empty scope item
+      document.getElementById('scopeList').innerHTML = `
+        <div class="scope-item">
+          <input type="text" placeholder="e.g. Kitchen Remodel">
+          <button type="button" class="btn-remove" onclick="removeScope(this)">✕</button>
+        </div>`;
+    } catch (err) {
+      msg.className = 'message error';
+      msg.textContent = '✗ Submission failed: ' + (err.message || 'Unknown error');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Submit Intake &nbsp;→';
+  });
+</script>
+</body>
+</html>
